@@ -1,4 +1,4 @@
-import { sha256 } from 'static/scripts/encriptar.js';
+import { sha256 } from '/static/scripts/encriptar.js';
 console.log(sha256("hola"))
 
 document.getElementById('ingresar').addEventListener('submit', async function(e) {

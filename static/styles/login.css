@@ -81,7 +81,7 @@ button:hover {
 .login-image {
     width: 50%;
     height: 100vh;
-    background-image: url('static/assets/banner.jpg'); /* Reemplaza con tu imagen */
+    background-image: url('/static/assets/banner.png'); /* Reemplaza con tu imagen */
     background-size: cover;
     background-position: center;
     animation: fadeInRight 1.5s;
