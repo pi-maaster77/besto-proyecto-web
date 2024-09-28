@@ -1,26 +1,41 @@
-nombre = localStorage.getItem("username") || ""; // Obtener el usuario guardado en el navegador.
-function sesion (usuario) {
-    nav = document.getElementById("nav")
-    if(usuario.length > 0){ // Si hay un usuario, colocar su nombre y el boton de cerrar sesion.
-        nav.innerHTML = 
-        `${usuario}<hr>
-        <button onclick="logout()">cerrar sesion</button>`
-    }
-    else { // Caso contrario, colocar los botones de iniciar sesion y registrar usuario.
-        nav.innerHTML = 
-        `<button onclick="window.location.href = '/login'">ingresar</button><hr>
-        <button onclick="window.location.href = '/register'">registrar</button>`
-    }
-}
-sesion(nombre)
-    
-  
-function logout() {
-    if (window.confirm("¿Quieres cerrar sesion?")) { // Preguntar si el usuario quiere cerrar sesion.
-        localStorage.clear();
-        location.reload();
-        // De ser el caso, borrar las cookies y recargar la pagina.
-    }
-}
+import { sha256 } from '/static/scripts/encriptar.js';
+console.log(sha256("hola"))
 
-console.log("adwdasd")
+document.getElementById('ingresar').addEventListener('submit', async function(e) {
+    e.preventDefault(); // Prevenir el envío del formulario
+
+    const user = document.getElementById("user").value;
+    const passwd = document.getElementById("passwd").value;
+
+    if (passwd == null) {
+        document.getElementById("mensajeError").innerHTML = "Error: no hay contraseña";
+    } else {
+        const hash = await sha256(passwd); // Asegúrate de que sha256 esté correctamente definido
+        console.log(`Usuario: ${user}, Contraseña (hashed): ${hash}`); // Depuración
+
+        const formData = new FormData();
+        formData.append('passwd', hash);
+        formData.append('user', user);
+
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                document.getElementById('mensaje').innerHTML = `<p style="color: green;">${result.message}</p>`;
+                setTimeout(() => {
+                    window.location.href = "/";
+                }, 2000);
+            } else {
+                document.getElementById('mensaje').innerHTML = `<p style="color: red;">Error: ${result.error}</p>`;
+            }
+        } catch (error) {
+            console.error('Error al registrar:', error);
+            document.getElementById('mensajeError').innerHTML = `<p style="color: red;">Error al registrar</p>`;
+        }
+    }
+});

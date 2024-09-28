@@ -52,27 +52,12 @@
         </nav>
         <p>Copyright © 2027</p>
     </footer>
-    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
-    <script src="{{ url_for('static', filename='/scripts/login.js')}}"></script>
-    <script src="{{ url_for('static', filename='/scripts/main.js')}}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
-    <script>
-        function toggleFriendsList() {
-            const friendsList = document.getElementById("friends-list");
-            if (friendsList.style.display === "none" || friendsList.style.display === "") {
-                friendsList.style.display = "block"; 
-            } else {
-                friendsList.style.display = "none"; 
-            }
-        }
+    <script src="/static/scripts/user.js"></script>
+    <script src="/static/scripts/index.js"></script>
+    <script src="/static/scripts/friends.js"></script>
 
-        window.onclick = function(event) {
-            const friendsList = document.getElementById("friends-list");
-            if (!event.target.matches('#toggle-friends-list') && !friendsList.contains(event.target)) {
-                friendsList.style.display = "none"; 
-            }
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
 </body>
 
 </html>
