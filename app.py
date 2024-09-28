@@ -45,7 +45,7 @@ def get_articles():
 
 @app.route("/image")
 def get_image():
-    nombre = request.args.get('nombre')
+    nombre = request.args.get('name')
     try:
         return send_file(f"uploads/{nombre}", mimetype='image/png')
     except Exception as e:

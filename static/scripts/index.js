@@ -1,14 +1,13 @@
 const escribir = document.getElementById("escribir"); // Obtener donde se escribiran los articulos
 
-async function actualizarLikes() { // Actualizar los likes.
-  const likesArticulos = await fetch('/likes') // Obtener los likes actualizados.
-  const cantidad = await likesArticulos.json() // Transformar lo obtenido en objeto.
-  for(articulo of cantidad.articulos){ // Por cada articulo, obtener el contador de likes [1] y actualizarlo [2].
-    const actualizar = document.getElementById(`cantidad-likes${articulo.id}`) // 1
-    actualizar.innerHTML = articulo.likes // 2
-    
-  }
+function agregarArticulo(articulo) { // Escribir los articulos.
+  escribir.innerHTML += `<article>
+      <h2>${articulo.title}</h2>
+      <img src="/image?name=${articulo.image}">
+      
+    </article>`;
 }
+
 async function mostrarArticulos() {
   try {
     const response = await fetch(`/articles`); // Obtener los datos de la pagina api.
@@ -27,4 +26,4 @@ async function mostrarArticulos() {
   }
 }
 
-setInterval(mostrarArticulos, 10000);
+mostrarArticulos()
