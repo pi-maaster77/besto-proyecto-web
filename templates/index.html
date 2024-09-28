@@ -13,162 +13,17 @@
     <!-- Fuente Google -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif&display=swap" rel="stylesheet">
 
-<<<<<<< HEAD
-    <style>
-        body {
-            font-family: 'Noto Serif', serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: #4183c4;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        nav {
-            display: flex;
-            justify-content: space-between; /* Espaciado entre elementos */
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            padding: 10px 15px;
-        }
-
-        nav a:hover {
-            background-color: #3a7cbb;
-            border-radius: 5px;
-        }
-
-        section {
-            display: flex;
-            justify-content: center;
-            margin: 20px 0;
-        }
-
-        article {
-            border: 2px solid #4183c4;
-            padding: 20px;
-            border-radius: 50%;
-            font-size: 2rem;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        footer {
-            background-color: #2c3e50;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        footer nav {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 10px;
-        }
-
-        footer p {
-            margin: 0;
-        }
-
-        .ui.button {
-            margin: 5px;
-        }
-
-        .icons {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        /* Estilos para el botón del logo */
-        .icon {
-            display: flex; /* Cambiado a flex para alinear */
-            align-items: center; /* Centrado verticalmente */
-        }
-
-        .icon img {
-            width: 50px; /* Tamaño original del logo */
-            height: 50px; /* Tamaño original del logo */
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        /* Estilos para los botones del menú */
-        .icon-buttons {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            position: relative; /* Establecer posición relativa para el menú desplegable */
-        }
-
-        .icon-buttons i {
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: white;
-        }
-
-        .icon-buttons img:hover,
-        .icon-buttons i:hover {
-            background-color: #3a7cbb;
-            border-radius: 50%;
-        }
-
-        /* Estilos para el menú desplegable de amigos */
-        .friends-list {
-            display: none; /* Oculto por defecto */
-            position: absolute;
-            right: 0; /* Alinea el menú a la derecha */
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-top: 10px;
-            z-index: 1000;
-        }
-
-        .friends-list ul {
-            list-style: none;
-            padding: 10px;
-            margin: 0;
-        }
-
-        .friends-list li {
-            padding: 5px 10px;
-            cursor: pointer;
-        }
-
-        .friends-list li:hover {
-            background-color: #f0f0f0;
-        }
-    </style>
-=======
-    <link rel="stylesheet" href="{{ url_for('static', filename='/styles/index.css')}}">
->>>>>>> c0af1f6cb4f6504e9fd5b8815fcf5d7822c1225a
+    <link rel="stylesheet" href="static/styles/index.css">
 </head>
 
 <body>
     <header id="inicio">
         <nav>
-            <a href="index.html" class="icon"><img src="../images/logo.png" alt="Logo"></a> <!-- Tamaño original -->
+            <a href="index.html" class="icon"><img src="static/assets/logo.png" alt="Logo"></a> <!-- Tamaño original -->
             <div class="icon-buttons">
-                <a href="crear.html">Crear</a>
-                <a href="ingresar.html">Login</a>
-                <a href="registrar.html">Registrar</a>
+                <a href="/upload">Crear</a>
+                <a href="/login">Login</a>
+                <a href="/register">Registrar</a>
                 <i class="fas fa-envelope"></i>
                 <i class="fas fa-user-friends" id="toggle-friends-list" onclick="toggleFriendsList()"></i>
                 <img src="default-user.png" alt="Usuario" onclick="window.location.href='perfil.html'">
@@ -185,12 +40,21 @@
         </nav>
         <h1>Mi Blog</h1>
     </header>
-<<<<<<< HEAD
 
-    <section id="escribir">
-        <article onclick="window.location.href = 'crear.html'"><center>+</center></article>
+    <section id= "escribir">
+        <button onclick="window.location.href = '/upload'" id="subir">+</button>
     </section>
 
+    <footer>
+        <nav>
+            <a href="#" onclick="alert('Contactame esta')">¡Contáctenos!</a>
+            <a href="/#inicio">Volver al inicio</a>
+        </nav>
+        <p>Copyright © 2027</p>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+    <script src="{{ url_for('static', filename='/scripts/login.js')}}"></script>
+    <script src="{{ url_for('static', filename='/scripts/main.js')}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
     <script>
         function toggleFriendsList() {
@@ -209,22 +73,6 @@
             }
         }
     </script>
-=======
-    <section id= "escribir">
-        <button onclick="window.location.href = '/upload'" id="subir">+</button>
-    </section>
-
-    <footer>
-        <nav>
-            <a href="#" onclick="alert('Contactame esta')">¡Contáctenos!</a>
-            <a href="/#inicio">Volver al inicio</a>
-        </nav>
-        <p>Copyright © 2027</p>
-    </footer>
-    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
-    <script src="{{ url_for('static', filename='/scripts/login.js')}}"></script>
-    <script src="{{ url_for('static', filename='/scripts/main.js')}}"></script>
->>>>>>> c0af1f6cb4f6504e9fd5b8815fcf5d7822c1225a
 </body>
 
 </html>

@@ -14,121 +14,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: #f7f7f7;
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .login-container {
-            display: flex;
-            flex-grow: 1;
-            justify-content: space-between;
-            width: 100%;
-        }
-
-        .login-form {
-            width: 50%;
-            padding: 40px;
-            background-color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            animation: fadeInLeft 1.5s;
-        }
-
-        .login-form h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 30px;
-        }
-
-        .ui.icon.input {
-            margin-bottom: 20px;
-            width: 100%;
-        }
-
-        .ui.icon.input > input {
-            padding-left: 2.5rem;
-        }
-
-        .ui.icon.input > i.icon {
-            position: absolute;
-            top: 50%;
-            left: 10px;
-            transform: translateY(-50%);
-            color: #4183c4;
-        }
-
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-        }
-
-        button {
-            margin-top: 20px;
-            background-color: #4183c4;
-            color: white;
-            border: none;
-            padding: 15px;
-            font-size: 1.2rem;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        button:hover {
-            background-color: #3a7cbb;
-        }
-
-        .login-image {
-            width: 50%;
-            height: 100vh;
-            background-image: url('../images/banner.jpg'); /* Reemplaza con tu imagen */
-            background-size: cover;
-            background-position: center;
-            animation: fadeInRight 1.5s;
-        }
-
-        @media (max-width: 768px) {
-            .login-container {
-                flex-direction: column;
-            }
-
-            .login-form,
-            .login-image {
-                width: 100%;
-            }
-
-            .login-image {
-                height: 50vh;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="static/styles/login.css">
 </head>
 
 <body>
-<<<<<<< HEAD
     <div class="login-container">
         <!-- Login Form -->
         <div class="login-form animate__animated animate__fadeInLeft">
             <h1>Ingresar</h1>
-            <form action="/ingresar" method="post" id="ingresar">
+            <form method="post" id="ingresar">
                 <div class="ui icon input">
                     <i class="fas fa-user icon"></i>
                     <input type="text" id="user" name="user" placeholder="Usuario" required>
@@ -138,6 +32,8 @@
                     <i class="fas fa-lock icon"></i>
                     <input type="password" id="passwd" name="passwd" placeholder="Contraseña" required>
                 </div>
+
+                <p id="mensaje"></p>
 
                 <button type="submit"><i class="fas fa-sign-in-alt"></i> Ingresar</button>
             </form>
@@ -149,37 +45,12 @@
             <!-- Imagen relacionada con el arte. -->
         </div>
     </div>
+    <script src="static/scripts/login.js" type="module"></script>
 
     <!-- Semantic UI JS -->
     <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
     <!-- Animate.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"></script>
-=======
-    <header id="inicio">
-        <h1>Mi Blog</h1>
-    </header>
-    <article>
-        <h2>Ingresar</h2>
-        <p id="mensajeError" style="color: red;"></p>
-        <form method="post" id = "ingresar">
-          <p><input type="text"        id="user"   name="user"     placeholder="usuario"       required></p>
-          <p><input type="password"    id="passwd" name="passwd"   placeholder="contraseña"    required></p>
-          <p><button type="submit">ingresar</button></p>
-        </form>
-        <p>¿todavia no tienes cuenta? haz click <a href="registrar">aqui</a> para crear una</p>
-        
-    
-    </form>
-    </article>
-    <footer>
-        <nav>
-            <a href="" onclick="alert('contactame esta')">¡Contactenos!</a>
-            <a href="/">volver al inicio</a>
-        </nav>
-        <p>CoppyWrite 2027</p>
-    </footer>
-    <script src="script/ingresar"></script>
->>>>>>> c0af1f6cb4f6504e9fd5b8815fcf5d7822c1225a
 </body>
 
 </html>

@@ -1,0 +1,103 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f7f7f7;
+    display: flex;
+    min-height: 100vh;
+}
+
+.login-container {
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.login-form {
+    width: 50%;
+    padding: 40px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    animation: fadeInLeft 1.5s;
+}
+
+.login-form h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.ui.icon.input {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.ui.icon.input > input {
+    padding-left: 2.5rem;
+}
+
+.ui.icon.input > i.icon {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    color: #4183c4;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+button {
+    margin-top: 20px;
+    background-color: #4183c4;
+    color: white;
+    border: none;
+    padding: 15px;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #3a7cbb;
+}
+
+.login-image {
+    width: 50%;
+    height: 100vh;
+    background-image: url('static/assets/banner.jpg'); /* Reemplaza con tu imagen */
+    background-size: cover;
+    background-position: center;
+    animation: fadeInRight 1.5s;
+}
+
+@media (max-width: 768px) {
+    .login-container {
+        flex-direction: column;
+    }
+
+    .login-form,
+    .login-image {
+        width: 100%;
+    }
+
+    .login-image {
+        height: 50vh;
+    }
+}

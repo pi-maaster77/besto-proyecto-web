@@ -1,0 +1,107 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f7f7f7;
+    display: flex;
+    min-height: 100vh;
+}
+
+.register-container {
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.register-form {
+    width: 50%;
+    padding: 40px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    animation: fadeInLeft 1.5s;
+}
+
+.register-form h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.ui.input {
+    margin-bottom: 20px;
+    width: 100%;
+    position: relative;
+}
+
+.ui.input i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 15px 15px 15px 40px; /* Ajuste de padding para el ícono */
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+/* Hacemos los estilos de los inputs iguales */
+input[type="text"]::placeholder,
+input[type="password"]::placeholder {
+    color: #bbb;
+    font-size: 1rem;
+}
+
+button {
+    margin-top: 20px;
+    background-color: #4183c4;
+    color: white;
+    border: none;
+    padding: 15px;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #3a7cbb;
+}
+
+.register-image {
+    width: 50%;
+    height: 100vh;
+    background-image: url('static/assets/banner2.jpg'); /* Reemplaza con tu imagen */
+    background-size: cover;
+    background-position: center;
+    animation: fadeInRight 1.5s;
+}
+
+@media (max-width: 768px) {
+    .register-container {
+        flex-direction: column;
+    }
+
+    .register-form,
+    .register-image {
+        width: 100%;
+    }
+
+    .register-image {
+        height: 50vh;
+    }
+}

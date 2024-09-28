@@ -1,29 +1,41 @@
-document.getElementById("ingresar").addEventListener("submit", function (event) { // Enviar el usuario y contraseña ingresados.
-    event.preventDefault();
+import { sha256 } from 'static/scripts/encriptar.js';
+console.log(sha256("hola"))
+
+document.getElementById('ingresar').addEventListener('submit', async function(e) {
+    e.preventDefault(); // Prevenir el envío del formulario
 
     const user = document.getElementById("user").value;
-    const passwd = document.getElementById("passwd").value; 
-    // Obtener de la encuesta los usuarios y contraseñas.
+    const passwd = document.getElementById("passwd").value;
 
-    fetch("/ingresar", { // Subir los datos al servidor con el metodo POST.
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ user, passwd })
-        })
-        .then(response => {
+    if (passwd == null) {
+        document.getElementById("mensajeError").innerHTML = "Error: no hay contraseña";
+    } else {
+        const hash = await sha256(passwd); // Asegúrate de que sha256 esté correctamente definido
+        console.log(`Usuario: ${user}, Contraseña (hashed): ${hash}`); // Depuración
+
+        const formData = new FormData();
+        formData.append('passwd', hash);
+        formData.append('user', user);
+
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
             if (response.ok) {
-                localStorage.setItem("username", user) // guardar el nombre de usuario en el navegador.
-                window.location.href = "/" //redirigir al inicio.
-                return response.json();
+                document.getElementById('mensaje').innerHTML = `<p style="color: green;">${result.message}</p>`;
+                setTimeout(() => {
+                    window.location.href = "/";
+                }, 2000);
             } else {
-                throw new Error("Error en el inicio de sesion.");
+                document.getElementById('mensaje').innerHTML = `<p style="color: red;">Error: ${result.error}</p>`;
             }
-
-        })
-        .catch(error => {
-            error = document.getElementById("mensajeError")
-            error.innerText = "Error: Nombre de usuario o contraseña incorrectos"; // Si el inicio de sesion falla, notificar al usuario.
-        });
+        } catch (error) {
+            console.error('Error al registrar:', error);
+            document.getElementById('mensajeError').innerHTML = `<p style="color: red;">Error al registrar</p>`;
+        }
+    }
 });

@@ -8,8 +8,8 @@ function sesion (usuario) {
     }
     else { // Caso contrario, colocar los botones de iniciar sesion y registrar usuario.
         nav.innerHTML = 
-        `<button onclick="window.location.href = '/ingresar'">ingresar</button><hr>
-        <button onclick="window.location.href = '/registrar'">registrar</button>`
+        `<button onclick="window.location.href = '/login'">ingresar</button><hr>
+        <button onclick="window.location.href = '/register'">registrar</button>`
     }
 }
 sesion(nombre)

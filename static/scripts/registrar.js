@@ -1,4 +1,4 @@
-import { sha256 } from '/static/scripts/encriptar.js';
+import { sha256 } from 'static/scripts/encriptar.js';
 console.log(sha256("hola"))
 
 document.getElementById('registrar').addEventListener('submit', async function(e) {
@@ -27,16 +27,16 @@ document.getElementById('registrar').addEventListener('submit', async function(e
             const result = await response.json();
 
             if (response.ok) {
-                document.getElementById('mensajeError').innerHTML = `<p style="color: green;">${result.message}</p>`;
+                document.getElementById('mensaje').innerHTML = `<p style="color: green;">${result.message}</p>`;
                 setTimeout(() => {
                     window.location.href = "/";
                 }, 2000);
             } else {
-                document.getElementById('mensajeError').innerHTML = `<p style="color: red;">Error: ${result.error}</p>`;
+                document.getElementById('mensaje').innerHTML = `<p style="color: red;">Error: ${result.error}</p>`;
             }
         } catch (error) {
             console.error('Error al registrar:', error);
-            document.getElementById('mensajeError').innerHTML = `<p style="color: red;">Error al registrar</p>`;
+            document.getElementById('mensaje').innerHTML = `<p style="color: red;">Error al registrar</p>`;
         }
     }
 });

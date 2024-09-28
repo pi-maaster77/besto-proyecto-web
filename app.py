@@ -109,6 +109,10 @@ def upload_file():
             print(e)
             return jsonify({"error": str(e)}), 500
 
+@app.route("/login")
+def login():
+    return render_template("ingresar.html")
+
 @app.route("/login", methods=['POST'])
 def iniciar_sesion():
     if not 'user' in request.form or not 'passwd' in request.form:
