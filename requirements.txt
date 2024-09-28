@@ -1,0 +1,7 @@
+# si necesitan instalar una libreria, peguen su nombre aqui y escriban en el terminal "pip install -r requirements.txt"
+
+
+flask
+python-dotenv
+psycopg2-binary
+flask-cors
