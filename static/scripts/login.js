@@ -22,3 +22,5 @@ function logout() {
         // De ser el caso, borrar las cookies y recargar la pagina.
     }
 }
+
+console.log("adwdasd")

@@ -131,29 +131,37 @@ def iniciar_sesion():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
+@app.route("/register")
+def registrar():
+    return render_template("registrar.html")
+
 @app.route("/register", methods=['POST'])
 def registro():
     if not 'user' in request.form or not 'passwd' in request.form:
-        return "Falta el usuario o la contraseña", 400
+        return jsonify({"error": "Falta el usuario o la contraseña"}), 400
     
     username = request.form['user']
     passwd = str(request.form['passwd'])  # Contraseña hasheada desde el cliente
-    print(username, passwd)
+    print(username, passwd)  # Esto se imprimirá en la consola del servidor
+    
     try:
         with connection.cursor() as cursor:
-            # Usamos una consulta parametrizada
             sql = "SELECT username FROM users WHERE username=%s"
-            cursor.execute(sql, (username,))  # Comparación con contraseña hasheada
+            cursor.execute(sql, (username,))
             result = cursor.fetchone()
+            
             if result:
-                return jsonify({"message": "El Usuario ya existe"}), 401
-            else:
-                sql = "INSERT INTO users (username, password) VALUES (%s, %s)"
-                cursor.execute(sql, (username, passwd))  # Insertar el nuevo usuario
-                connection.commit()  # No olvides hacer commit para que se guarden los cambios
-                return jsonify({"message": "Registro exitoso"}), 200
+                return jsonify({"error": "El Usuario ya existe"}), 401
+            
+            sql = "INSERT INTO users (username, password) VALUES (%s, %s)"
+            cursor.execute(sql, (username, passwd))  # Insertar el nuevo usuario
+            connection.commit()  # No olvides hacer commit para que se guarden los cambios
+            
+            return jsonify({"message": "Registro exitoso"}), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        print(f"Error en el registro: {e}")  # Imprimir el error en la consola del servidor
+        return jsonify({"error": "Ocurrió un error en el registro."}), 500
+
 
 @app.route("/likes")
 def likes():

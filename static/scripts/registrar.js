@@ -1,30 +1,42 @@
-document.getElementById("registrar").addEventListener("submit", function (event) { // Esperar a que se pueda escribir en el documento.
-    event.preventDefault();
+import { sha256 } from '/static/scripts/encriptar.js';
+console.log(sha256("hola"))
+
+document.getElementById('registrar').addEventListener('submit', async function(e) {
+    e.preventDefault(); // Prevenir el envío del formulario
 
     const user = document.getElementById("user").value;
     const passwd = document.getElementById("passwd").value;
-    const cpasswd = document.getElementById("cpasswd").value
-    // Conseguir los datos ingresados.
-    if(cpasswd != passwd){ // Verificar si las contraseñas son diferentes
-        document.getElementById("mensajeError").innerHTML = "Error al crear la cuenta: las contraseñas no coinciden"
-    } else { // De ser el caso, continuar.
-    fetch("/registrar", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ user, passwd })
-    }) // Enviar el nuevo usuario al servidor.
-        .then(response => {
-            if (response.ok) { // Verificar si la respuesta no es un error
-                localStorage.setItem("username", user) // Guardar el usuario.
-                window.location.href = "/"
-                return response.json();
-            } else { // De no ser el caso, informar al usuario.
-                throw new Error("Error al crear la cuenta");
+    const cpasswd = document.getElementById("cpasswd").value;
+
+    if (cpasswd !== passwd) {
+        document.getElementById("mensajeError").innerHTML = "Error al crear la cuenta: las contraseñas no coinciden";
+    } else {
+        const hash = await sha256(passwd); // Asegúrate de que sha256 esté correctamente definido
+        console.log(`Usuario: ${user}, Contraseña (hashed): ${hash}`); // Depuración
+
+        const formData = new FormData();
+        formData.append('passwd', hash);
+        formData.append('user', user);
+
+        try {
+            const response = await fetch('/register', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                document.getElementById('mensajeError').innerHTML = `<p style="color: green;">${result.message}</p>`;
+                setTimeout(() => {
+                    window.location.href = "/";
+                }, 2000);
+            } else {
+                document.getElementById('mensajeError').innerHTML = `<p style="color: red;">Error: ${result.error}</p>`;
             }
-    })
-        .catch(error => {
-            document.getElementById("mensajeError").innerText = "Error: el usuario ya existe"; // Informar al usuario si el nombre de usuario ya existe.
-    });
-}});
+        } catch (error) {
+            console.error('Error al registrar:', error);
+            document.getElementById('mensajeError').innerHTML = `<p style="color: red;">Error al registrar</p>`;
+        }
+    }
+});

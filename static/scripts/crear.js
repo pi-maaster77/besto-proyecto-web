@@ -27,3 +27,4 @@ document.getElementById('crear').addEventListener('submit', async function(e) {
         document.getElementById('message').innerHTML = `<p style="color: red;">Error al subir el archivo</p>`;
     }
 });
+
