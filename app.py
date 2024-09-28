@@ -2,13 +2,13 @@ import os
 import psycopg2
 from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, send_file, request
-from flask_cors import CORS
+from werkzeug.utils import secure_filename
+import uuid
 
 load_dotenv()
 
 # configuracion de flask
 app = Flask(__name__)
-CORS(app)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
@@ -50,7 +50,7 @@ def get_image():
         return send_file(f"uploads/{nombre}", mimetype='image/png')
     except Exception as e:
         print(e)
-        return send_file(f"images/404.png", mimetype='image/*')
+        return send_file(f"static/assets/404.png", mimetype='image/*')
 
 @app.route("/likes")
 def get_likes():
@@ -67,10 +67,8 @@ def get_likes():
 def get_upload():
     return render_template("upload.html")
 
-
 @app.route('/upload', methods=['POST'])
 def handle_upload():
-
     if 'image' not in request.files or 'title' not in request.form:
         print("Falta el archivo o el título")
         return "Falta el archivo o el título", 400
@@ -83,21 +81,29 @@ def handle_upload():
         return "No se seleccionó ningún archivo", 400
 
     if file and title:
-        filename = file.filename
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)
-        print(f"Archivo subido con éxito: {filename}")
-
         try:
-            with connection.cursor() as cursor:
-                query = "INSERT INTO articulos (img, title) VALUES (%s, %s)"
-                cursor.execute(query, (filename, title))
-                connection.commit()
-                return jsonify({"message": "Artículo subido con éxito", "title": title, "image": filename}), 200
-        except Exception as e:
-            print(e)
-            return jsonify({"error": str(e)}), 500
+            # Generar un nombre único utilizando UUID para evitar colisiones
+            extension = os.path.splitext(file.filename)[1]  # Obtener la extensión original
+            unique_id = str(uuid.uuid4())  # Generar un UUID único
+            filename = secure_filename(f"{title}_{unique_id}{extension}")  # Asegurar el nombre
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)  # Guardar la imagen
 
+            print(f"Imagen guardada correctamente: {filename}")
+
+            # Ahora inserta el artículo en la base de datos con el nombre seguro de la imagen
+            with connection.cursor() as cursor:
+                query = "INSERT INTO articulos (title, img) VALUES (%s, %s)"
+                cursor.execute(query, (title, filename))
+                connection.commit()
+                print(f"Artículo con título '{title}' y imagen '{filename}' insertado correctamente en la base de datos")
+
+            return jsonify({"message": "Artículo subido con éxito", "title": title, "image": filename}), 200
+
+        except Exception as e:
+            print(f"Error: {e}")
+            return jsonify({"error": str(e)}), 500
+        
 # parte encargada de inicio de sesion
 
 @app.route("/login")
