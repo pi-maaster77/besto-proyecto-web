@@ -25,20 +25,33 @@ app.config['UPLOAD_FOLDER'] = 'uploads'
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
 
+@app.route("/")
+def root():
+    return render_template("index.html")
+
 @app.route("/articles")
 def route():
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT json_agg(json_build_object(
-                'id', id, 
-                'image', img, 
-                'title', title
-                )) AS articulos 
-            FROM articulos;
-        """)
-        result = cursor.fetchall()
-        json_result = result[0][0]
-        return jsonify(json_result)
+    try:
+        # Habilitar autocommit para evitar la gestión manual de transacciones
+        connection.autocommit = True
+
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT json_agg(json_build_object(
+                    'id', id, 
+                    'image', img, 
+                    'title', title
+                    )) AS articulos 
+                FROM articulos;
+            """)
+            result = cursor.fetchall()
+            json_result = result[0][0]
+            return jsonify(json_result)
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"error": "Error en la transacción"})
+
+
 
 @app.route("/image")
 def data():
@@ -141,6 +154,10 @@ def registro():
                 return jsonify({"message": "Registro exitoso"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route("/likes")
+def likes():
+    return jsonify({"message": "puto el que lea"})
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
