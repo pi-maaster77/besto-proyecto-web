@@ -61,6 +61,63 @@ def get_likes():
         json_result = result[0][0]
         return jsonify(json_result)
 
+# Parte encargada de manejar los comentarios
+
+@app.route('/comment')
+def get_comment():
+    nombre = request.args.get('id')
+    
+    if nombre is None or nombre == '':
+        return jsonify({"error": "El parámetro 'id' es requerido."}), 400
+
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT json_agg(json_build_object(
+                    'text', comment, 
+                    'user', user
+                )) AS comentario 
+                FROM comentario 
+                WHERE article_id = %s;
+            """, (nombre,))
+            
+            result = cursor.fetchone()
+            json_result = result[0] if result else []
+            return jsonify(json_result)
+    except Exception as e:
+        print(f"Error: {str(e)}")  # Muestra el error completo
+        return jsonify({"error": "Error en la transacción"}), 500
+
+@app.route('/comment', methods=['POST']) 
+def post_comment():
+    # Verificar que se reciban todos los datos necesarios
+    token = request.form.get('token')  # Usar .get para evitar KeyError
+    article_id = request.form.get('article_id')
+    comment = request.form.get('comment')
+
+    if not token or not article_id or not comment:
+        return jsonify({"error": "Faltan datos requeridos"}), 400  # Código de error 400 si falta información
+
+    print(token, article_id, comment)
+
+    try:
+        with connection.cursor() as cursor:
+            # Insertar el comentario en la base de datos
+            cursor.execute("""
+                INSERT INTO comentario (comment, user_id, article_id) 
+                VALUES (%s, %s, %s)
+            """, 
+            (comment, 5, article_id))  # Cambia '5' por el ID real del usuario, si corresponde
+
+        connection.commit()  # Asegúrate de confirmar la transacción
+
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return jsonify({"error": str(e)}), 500  # Devuelve el error en caso de fallo
+
+    return jsonify({'message': 'Comentario subido con éxito'}), 200  # Respuesta exitosa
+
+
 # Parte encargada de manejar la subida de nuevos articulos
 
 @app.route('/upload')

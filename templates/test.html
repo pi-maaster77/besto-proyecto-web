@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Difuminar Fondo</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .fondo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            filter: blur(8px); /* Efecto de difuminado */
+            z-index: -1;
+        }
+        .contenido {
+            position: relative;
+            color: white;
+            padding: 20px;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="fondo" id="fondo">
+        <img src="../static/assets/banner2.png" alt="">
+    </div>
+    <div class="contenido">
+        <h1>Título Principal</h1>
+        
+        <p>Este es un ejemplo de cómo difuminar el fondo de una web.</p>
+        <button id="quitarDifuminado">Quitar Difuminado</button>
+    </div>
+
+    <script>
+        document.getElementById("quitarDifuminado").addEventListener("click", function() {
+            const fondo = document.getElementById("fondo");
+            fondo.style.filter = "none"; // Elimina el difuminado
+        });
+    </script>
+</body>
+</html>

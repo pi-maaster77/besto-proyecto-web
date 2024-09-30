@@ -1,25 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Blog</title>
-
-    <!-- Semantic UI -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Fuente Google -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="/static/styles/index.css">
 </head>
-
 <body>
     <header id="inicio">
         <nav>
-            <a href="/" class="icon"><img src="/static/assets/logo.png" alt="Logo"></a> <!-- Tamaño original -->
+            <a href="/" class="icon"><img src="/static/assets/logo.png" alt="Logo"></a>
             <div class="icon-buttons">
                 <a href="/upload">Crear</a>
                 <a href="/login">Login</a>
@@ -28,7 +21,6 @@
                 <i class="fas fa-user-friends" id="toggle-friends-list" onclick="toggleFriendsList()"></i>
                 <img src="/static/assets/default-user.png" alt="Usuario" onclick="window.location.href='perfil.html'">
             </div>
-
             <div class="friends-list" id="friends-list">
                 <ul>
                     <li>Amigo 1</li>
@@ -41,23 +33,23 @@
         <h1>Mi Blog</h1>
     </header>
 
-    <section id= "escribir">
+    <section id="escribir">
         <button onclick="window.location.href = '/upload'" id="subir">+</button>
     </section>
 
-    <footer>
-        <nav>
-            <a href="#" onclick="alert('Contactame esta')">¡Contáctenos!</a>
-            <a href="/#inicio">Volver al inicio</a>
-        </nav>
-        <p>Copyright © 2027</p>
-    </footer>
+    <section id="contenedor-comentarios">
+        <button onclick="cerrarComentarios()">X</button>
+        <div id="comentarios"></div>
+        <form id="nuevo-comentario">
+            <input type="text" placeholder="comenta algo..." id="texto">
+            <input type="submit" placeholder="hola">
+        </form>
+    </section>
+    
+    <script src="/static/scripts/comments.js"></script>
     <script src="/static/scripts/user.js"></script>
     <script src="/static/scripts/index.js"></script>
     <script src="/static/scripts/friends.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
 </body>
-
 </html>

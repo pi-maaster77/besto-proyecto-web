@@ -4,6 +4,7 @@ function agregarArticulo(articulo) { // Escribir los articulos.
   escribir.innerHTML += `<article>
       <h2>${articulo.title}</h2>
       <img src="/image?name=${articulo.image}">
+      <button class="abrir-comentarios" onclick="abrirComentarios(${articulo.id})">comentar</button>
       
     </article>`;
 }
