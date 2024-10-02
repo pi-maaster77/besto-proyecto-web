@@ -69,55 +69,69 @@ def get_likes():
 
 @app.route('/comment')
 def get_comment():
-    nombre = request.args.get('id')
-    
-    if nombre is None or nombre == '':
+    article_id = request.args.get('id')  # Cambié nombre a article_id para mayor claridad
+
+    if article_id is None or article_id == '':
         return jsonify({"error": "El parámetro 'id' es requerido."}), 400
 
     try:
         with connection.cursor() as cursor:
             cursor.execute("""
                 SELECT json_agg(json_build_object(
-                    'text', comment, 
-                    'user', user
-                )) AS comentario 
-                FROM comentario 
-                WHERE article_id = %s;
-            """, (nombre,))
+                    'text', c.comment, 
+                    'user', u.username
+                )) AS comentarios 
+                FROM comentario c
+                JOIN users u ON c.user_id = u.id  -- Join con la tabla de usuarios
+                WHERE c.article_id = %s
+            """, (article_id,))
             
             result = cursor.fetchone()
-            json_result = result[0] if result else []
+            json_result = result[0] if result else []  # Maneja caso en que no haya resultados
             return jsonify(json_result)
     except Exception as e:
         print(f"Error: {str(e)}")  # Muestra el error completo
         return jsonify({"error": "Error en la transacción"}), 500
 
+
 @app.route('/comment', methods=['POST']) 
 def post_comment():
-    # Verificar que se reciban todos los datos necesarios
-    token = request.form.get('token')  # Usar .get para evitar KeyError
+    token = request.form.get('token').strip()  # Asegúrate de eliminar espacios en blanco
     article_id = request.form.get('article_id')
     comment = request.form.get('comment')
 
+    # Verificar que se reciban todos los datos necesarios
     if not token or not article_id or not comment:
-        return jsonify({"error": "Faltan datos requeridos"}), 400  # Código de error 400 si falta información
-
-    print(token, article_id, comment)
+        return jsonify({"error": "Faltan datos requeridos"}), 400  # Código 400 si falta información
 
     try:
         with connection.cursor() as cursor:
+            # Imprimir el token recibido para verificarlo
+            print(f"Token recibido: {token}")
+
+            # Verificar si el token es válido y obtener el user_id
+            cursor.execute("SELECT user_id FROM tokens WHERE token = %s", (token,))
+            result = cursor.fetchone()
+
+            # Imprimir el resultado de la consulta para depuración
+            print(f"Resultado de la consulta del token: {result}")
+
+            if not result:
+                return jsonify({"error": "Token inválido"}), 403  # Código 403 si el token no es válido
+
+            user_id = result[0]
+
             # Insertar el comentario en la base de datos
             cursor.execute("""
                 INSERT INTO comentario (comment, user_id, article_id) 
                 VALUES (%s, %s, %s)
-            """, 
-            (comment, 5, article_id))  # Cambia '5' por el ID real del usuario, si corresponde
+            """, (comment, user_id, article_id))
 
-        connection.commit()  # Asegúrate de confirmar la transacción
+        connection.commit()  # Confirmar la transacción
 
     except Exception as e:
         print(f"Error: {str(e)}")
-        return jsonify({"error": str(e)}), 500  # Devuelve el error en caso de fallo
+        return jsonify({"error": f"Error en la transacción: {str(e)}"}), 500  # Manejar el error correctamente
 
     return jsonify({'message': 'Comentario subido con éxito'}), 200  # Respuesta exitosa
 

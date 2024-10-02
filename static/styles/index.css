@@ -146,31 +146,40 @@ footer p {
     background-color: #c2c2c2; /* Color de fondo */
     color: #111111; /* Color del texto */
     display: flex;
-    flex-direction: column; /* Alineación vertical */
-    justify-content: flex-start; /* Alinea los elementos en la parte superior */
-    align-items: stretch; /* Permite que los elementos hijos usen el ancho completo */
-    width: 400px; /* Ancho fijo */
-    height: auto; /* Permite que la altura sea automática */
-    padding: 10px; /* Espaciado interno */
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    width: 400px;
+    max-height: 600px;
+    padding: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Sombra */
-    border-radius: 20px; /* Bordes redondeados */
-    z-index: 1000; /* Asegúrate de que esté por encima de otros elementos */
+    border-radius: 20px;
+    z-index: 1000;
+    display: none;
 }
 
-
 #comentarios {
-    flex-grow: 1; /* Permite que #comentarios ocupe el espacio disponible */
-    overflow-y: auto; /* Permite desplazamiento vertical si el contenido es grande */
+    overflow-y: scroll;
+    max-height: 300px; /* Limitar la altura del área de comentarios */
 }
 
 #nuevo-comentario {
     display: flex;
+    margin-top: 10px;
 }
 
+#nuevo-comentario input[type="text"] {
+    flex-grow: 1;
+    margin-right: 10px;
+}
 #texto {
     flex-grow: 1; /* Para que el campo de texto ocupe el máximo ancho disponible */
 }
 
 #nuevo-comentario input[type="submit"] {
     margin-left: 10px; /* Espacio entre el campo de texto y el botón de submit */
+}
+
+.no-scroll {
+    overflow: hidden;
 }
