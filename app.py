@@ -28,15 +28,17 @@ def get_home():
 @app.route("/articles")
 def get_articles():
     try:
-        # No necesitas autocommit para una consulta SELECT
         with connection.cursor() as cursor:
             cursor.execute("""
                 SELECT json_agg(json_build_object(
-                    'id', id, 
-                    'image', img, 
-                    'title', title
+                    'id', a.id, 
+                    'image', a.img, 
+                    'title', a.title,
+                    'user_id', a.user_id,
+                    'user', u.username  -- Incluir el nombre de usuario
                 )) AS articulos
-                FROM articulos;
+                FROM articulos a
+                LEFT JOIN users u ON a.user_id = u.id;  -- JOIN con la tabla de usuarios
             """)
             result = cursor.fetchone()  # Solo se espera una fila
             json_result = result[0] if result and result[0] else []  # Verificación de resultado nulo
@@ -150,13 +152,24 @@ def handle_upload():
 
     file = request.files['image']
     title = request.form['title']
-
+    token = request.form['token']
+    
     if file.filename == '':
         print("No se seleccionó ningún archivo")
         return "No se seleccionó ningún archivo", 400
 
-    if file and title:
+    if file and title and token:
         try:
+            # Obtener el user_id a partir del token
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT user_id FROM tokens WHERE token = %s", (token,))
+                user_id_result = cursor.fetchone()
+                
+                if not user_id_result:
+                    return jsonify({"error": "Token no válido"}), 403  # Token no encontrado
+                
+                user_id = user_id_result[0]
+
             # Generar un nombre único utilizando UUID para evitar colisiones
             extension = os.path.splitext(file.filename)[1]  # Obtener la extensión original
             unique_id = str(uuid.uuid4())  # Generar un UUID único
@@ -168,16 +181,17 @@ def handle_upload():
 
             # Ahora inserta el artículo en la base de datos con el nombre seguro de la imagen
             with connection.cursor() as cursor:
-                query = "INSERT INTO articulos (title, img) VALUES (%s, %s)"
-                cursor.execute(query, (title, filename))
+                query = "INSERT INTO articulos (title, img, user_id) VALUES (%s, %s, %s)"
+                cursor.execute(query, (title, filename, user_id))  # Inserta user_id
                 connection.commit()
-                print(f"Artículo con título '{title}' y imagen '{filename}' insertado correctamente en la base de datos")
+                print(f"Artículo con título '{title}', imagen '{filename}', y user_id '{user_id}' insertado correctamente en la base de datos")
 
             return jsonify({"message": "Artículo subido con éxito", "title": title, "image": filename}), 200
 
         except Exception as e:
             print(f"Error: {e}")
             return jsonify({"error": str(e)}), 500
+
         
 # parte encargada del manejo de sesiones
 

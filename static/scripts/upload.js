@@ -2,6 +2,7 @@ document.getElementById('crear').addEventListener('submit', async function(e) {
     e.preventDefault();
 
     const formData = new FormData();
+    formData.append('token', sessionStorage.getItem('token'))
     formData.append('title', document.getElementById('title').value);
     formData.append('image', document.getElementById('image').files[0]);
     //formData.append('token', sessionStorage.getItem("userToken"));

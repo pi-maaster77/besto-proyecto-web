@@ -2,6 +2,7 @@ const escribir = document.getElementById("escribir"); // Obtener donde se escrib
 
 function agregarArticulo(articulo) { // Escribir los articulos.
   escribir.innerHTML += `<article>
+      <p>${articulo.user}</p>
       <h2>${articulo.title}</h2>
       <img src="/image?name=${articulo.image}">
       <button class="abrir-comentarios" onclick="abrirComentarios(${articulo.id})">comentar</button>

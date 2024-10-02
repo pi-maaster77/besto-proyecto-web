@@ -9,6 +9,7 @@ CREATE TABLE articulos (
     id SERIAL PRIMARY KEY,
     img VARCHAR(255) NOT NULL,
     title VARCHAR(255) NOT NULL,
+    user_id INT REFERENCES users(id) ON DELETE CASCADE, 
     likes INT DEFAULT 0
 );
 
