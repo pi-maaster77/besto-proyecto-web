@@ -4,7 +4,7 @@ document.getElementById('crear').addEventListener('submit', async function(e) {
     const formData = new FormData();
     formData.append('title', document.getElementById('title').value);
     formData.append('image', document.getElementById('image').files[0]);
-    //formData.append('token', localStorage.getItem("userToken"));
+    //formData.append('token', sessionStorage.getItem("userToken"));
     try {
         const response = await fetch('/upload', {
             method: 'POST',

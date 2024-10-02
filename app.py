@@ -1,9 +1,12 @@
 import os
 import psycopg2
+import uuid
+import json
+
 from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, send_file, request
 from werkzeug.utils import secure_filename
-import uuid
+
 
 load_dotenv()
 
@@ -25,23 +28,24 @@ def get_home():
 @app.route("/articles")
 def get_articles():
     try:
-        connection.autocommit = True
-
+        # No necesitas autocommit para una consulta SELECT
         with connection.cursor() as cursor:
             cursor.execute("""
                 SELECT json_agg(json_build_object(
                     'id', id, 
                     'image', img, 
                     'title', title
-                    )) AS articulos 
+                )) AS articulos
                 FROM articulos;
             """)
-            result = cursor.fetchall()
-            json_result = result[0][0]
-            return jsonify(json_result)
+            result = cursor.fetchone()  # Solo se espera una fila
+            json_result = result[0] if result and result[0] else []  # Verificación de resultado nulo
+            return jsonify(json_result), 200
+
     except Exception as e:
         print(f"Error: {e}")
-        return jsonify({"error": "Error en la transacción"})
+        return jsonify({"error": "Error en la transacción"}), 500
+
 
 @app.route("/image")
 def get_image():
@@ -161,7 +165,7 @@ def handle_upload():
             print(f"Error: {e}")
             return jsonify({"error": str(e)}), 500
         
-# parte encargada de inicio de sesion
+# parte encargada del manejo de sesiones
 
 @app.route("/login")
 def get_login():
@@ -169,25 +173,89 @@ def get_login():
 
 @app.route("/login", methods=['POST'])
 def handle_login():
-    if not 'user' in request.form or not 'passwd' in request.form:
-        return "Falta el usuario o la contraseña", 400
+    if 'user' not in request.form or 'passwd' not in request.form:
+        return jsonify({"error": "Falta el usuario o la contraseña"}), 400
     
     username = request.form['user']
     passwd = request.form['passwd']
-
     try:
+        # Obtener conexión a la base de datos
         with connection.cursor() as cursor:
-            sql = "SELECT username FROM users WHERE username=%s AND password=%s"
-            cursor.execute(sql, (username, passwd))
-
+            # Buscar usuario
+            cursor.execute("SELECT id FROM users WHERE username=%s and password=%s", (username,passwd))
             result = cursor.fetchone()
-            if result:
-                return jsonify({"message": "Inicio de sesión exitoso"})
+
+            if result:  # Verificar contraseña
+                user_id = result[0]
+                token = str(uuid.uuid4())  # Generar token
+                cursor.execute("INSERT INTO tokens (user_id, token) VALUES (%s, %s)", (user_id, token))  # Insertar token
+
+                connection.commit()  # Confirmar los cambios en la base de datos
+                return jsonify({
+                    "message": "Inicio de sesión exitoso",
+                    "token": token
+                }), 200
             else:
                 return jsonify({"message": "Usuario o contraseña incorrectos"}), 401
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    print(request.mimetype)  # Verificar el tipo de contenido
+    data = request.get_data(as_text=True)  # Obtener el cuerpo de la solicitud como texto
+
+    # Intentar convertir el texto a JSON
+    try:
+        data = json.loads(data)  # Convertir el contenido de texto a un diccionario JSON
+    except json.JSONDecodeError:
+        return jsonify({"error": "Invalid JSON format"}), 400
+
+    # Obtener el token del JSON
+    token = data.get("token")
+    if not token:
+        return jsonify({"error": "Token not provided"}), 400
+
+    try:
+        # Obtener conexión a la base de datos
+        with connection.cursor() as cursor:
+            cursor.execute("DELETE FROM tokens WHERE token=%s", (token,))  # Agregar paréntesis para una tupla
+            connection.commit()  # Asegúrate de confirmar la transacción
+    except Exception as e:
+        print(e)
+        return jsonify({"error": "Database error"}), 500  # Manejar el error de la base de datos
+
+    print(token)  # Imprimir el token para depuración
+    return jsonify({"token": token}), 200  # Devolver el token en la respuesta
+
+@app.route("/username")
+def get_username_root():
+    token = request.args.get("token")
     
+    if not token:
+        return jsonify({"error": "Token no proporcionado"}), 400
+    
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT u.username
+                FROM users u
+                JOIN tokens t ON u.id = t.user_id
+                WHERE t.token = %s
+            """, (token,))  # El token debe pasarse como una tupla (token,)
+            result = cursor.fetchone()
+
+            if result:
+                return jsonify({"username": result[0]}), 200
+            else:
+                return jsonify({"error": "Token inválido o usuario no encontrado"}), 404
+
+    except psycopg2.Error as e:  # Usa la excepción adecuada si es PostgreSQL, o usa Exception si es otra base de datos
+        print(f"Error en la transacción: {e}")
+        return jsonify({"error": "Error en la transacción"}), 500
+
+
+
 # parte encargada del registro de usuarios
 
 @app.route("/register")
@@ -205,15 +273,13 @@ def handle_register():
     
     try:
         with connection.cursor() as cursor:
-            sql = "SELECT username FROM users WHERE username=%s"
-            cursor.execute(sql, (username,))
+            cursor.execute("SELECT username FROM users WHERE username=%s", (username,))
             result = cursor.fetchone()
             
             if result:
                 return jsonify({"error": "El Usuario ya existe"}), 401
             
-            sql = "INSERT INTO users (username, password) VALUES (%s, %s)"
-            cursor.execute(sql, (username, passwd))
+            cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, passwd))
             connection.commit()
             
             return jsonify({"message": "Registro exitoso"}), 200

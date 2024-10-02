@@ -39,6 +39,12 @@ CREATE TABLE comentario_likes (
     PRIMARY KEY (user_id, comentario_id)
 );
 
+CREATE TABLE tokens (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    token VARCHAR(255) NOT NULL
+);
+
 -- Crear un nuevo usuario en PostgreSQL (reemplaza 'server' y 'app_password' con los valores deseados)
 CREATE USER server WITH PASSWORD --'contraseña'; -- modificar antes de usar
 
