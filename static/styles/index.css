@@ -183,3 +183,139 @@ footer p {
 .no-scroll {
     overflow: hidden;
 }
+
+.comentario {
+    border: 1px solid #ddd; /* Añade un borde ligero */
+    border-radius: 5px; /* Esquinas redondeadas */
+    padding: 10px; /* Espaciado interno */
+    margin: 10px 0; /* Espaciado externo */
+    background-color: #f9f9f9; /* Fondo claro */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+.autor {
+    font-weight: bold; /* Autor en negrita */
+    color: #333; /* Color del texto del autor */
+    margin-bottom: 5px; /* Espaciado inferior */
+}
+
+.texto {
+    color: #555; /* Color del texto del comentario */
+    line-height: 1.5; /* Mejora el espaciado entre líneas */
+}
+
+.boton-de-cierre {
+    background-color: #ff4d4d; /* Color de fondo rojo */
+    color: white; /* Color del texto blanco */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Esquinas redondeadas */
+    padding: 8px 12px; /* Espaciado interno */
+    cursor: pointer; /* Cambia el cursor al pasar por encima */
+    font-size: 16px; /* Tamaño de la fuente */
+    transition: background-color 0.3s; /* Transición suave para el color de fondo */
+}
+
+.boton-de-cierre:hover {
+    background-color: #ff1a1a; /* Color más oscuro al pasar el cursor */
+}
+
+.comentario-form {
+    display: flex; /* Utiliza Flexbox para alinear elementos */
+    margin-top: 10px; /* Espaciado superior */
+}
+
+.entrada-de-comentario {
+    flex: 1; /* Ocupa todo el espacio disponible */
+    padding: 10px; /* Espaciado interno */
+    border: 1px solid #ccc; /* Borde ligero */
+    border-radius: 5px; /* Esquinas redondeadas */
+    margin-right: 10px; /* Espaciado derecho */
+}
+
+.subir {
+    background-color: #4CAF50; /* Color de fondo verde */
+    color: white; /* Color del texto blanco */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Esquinas redondeadas */
+    padding: 10px 15px; /* Espaciado interno */
+    cursor: pointer; /* Cambia el cursor al pasar por encima */
+    font-size: 16px; /* Tamaño de la fuente */
+    transition: background-color 0.3s; /* Transición suave para el color de fondo */
+}
+
+.subir:hover {
+    background-color: #45a049; /* Color más oscuro al pasar el cursor */
+}
+
+
+.articulo {
+    border: 1px solid #ddd; /* Borde ligero */
+    border-radius: 5px; /* Esquinas redondeadas */
+    padding: 15px; /* Espaciado interno */
+    margin: 10px 0; /* Espaciado externo */
+    background-color: #f9f9f9; /* Fondo claro */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+.autor {
+    font-size: 14px; /* Tamaño de fuente más pequeño */
+    color: #555; /* Color gris para el autor */
+    margin-bottom: 5px; /* Espaciado inferior */
+}
+
+.titulo {
+    font-size: 18px; /* Tamaño de fuente del título */
+    color: #333; /* Color del texto del título */
+    margin: 10px 0; /* Espaciado superior e inferior */
+}
+
+.imagen-articulo {
+    max-width: 100%; /* Asegura que la imagen no exceda el ancho del contenedor */
+    height: auto; /* Mantiene la relación de aspecto de la imagen */
+    border-radius: 5px; /* Esquinas redondeadas para la imagen */
+}
+
+.botones {
+    display: flex; /* Utiliza Flexbox para alinear los botones */
+    align-items: center; /* Alinea los elementos verticalmente */
+    justify-content: left;
+    margin-top: 10px; /* Espaciado superior */
+}
+
+.abrir-comentarios {
+    background-color: #4CAF50; /* Color de fondo verde */
+    color: white; /* Color del texto blanco */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Esquinas redondeadas */
+    padding: 8px 12px; /* Espaciado interno */
+    cursor: pointer; /* Cambia el cursor al pasar por encima */
+    font-size: 14px; /* Tamaño de la fuente */
+    margin-right: 10px; /* Espaciado entre botones */
+    transition: background-color 0.3s; /* Transición suave para el color de fondo */
+}
+
+.abrir-comentarios:hover {
+    background-color: #45a049; /* Color más oscuro al pasar el cursor */
+}
+
+.cantidad-de-likes {
+    margin: 0 10px; /* Espaciado lateral */
+    font-size: 16px; /* Tamaño de fuente para los likes */
+    color: #333; /* Color del texto de likes */
+}
+
+.dar-like {
+    background-color: #ff3c7d; /* Color de fondo rosa */
+    color: white; /* Color del texto blanco */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Esquinas redondeadas */
+    padding: 8px 12px; /* Espaciado interno */
+    cursor: pointer; /* Cambia el cursor al pasar por encima */
+    font-size: 14px; /* Tamaño de la fuente */
+    margin-right: 10px; /* Espaciado entre botones */
+    transition: background-color 0.3s; /* Transición suave para el color de fondo */
+}
+
+.dar-like:hover {
+    background-color: #ff0055; /* Color de fondo rosa */
+}

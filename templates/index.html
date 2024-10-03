@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Blog</title>
+    <title>NPI Arts</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif&display=swap" rel="stylesheet">
@@ -31,18 +31,18 @@
                 </ul>
             </div>
         </nav>
-        <h1>Mi Blog</h1>
+        <h1>NPI Arts</h1>
     </header>
 
     <section id="escribir">
     </section>
 
     <section id="contenedor-comentarios">
-        <button onclick="cerrarComentarios()">X</button>
+        <button onclick="cerrarComentarios()" class="boton-de-cierre">X</button>
         <div id="comentarios"></div>
         <form id="nuevo-comentario">
-            <input type="text" placeholder="comenta algo..." id="texto">
-            <input type="submit" placeholder="hola">
+            <input type="text" placeholder="comenta algo..." id="texto" class="entrada-de-comentario">
+            <input type="submit" value="▲" class="subir">
         </form>
     </section>
     

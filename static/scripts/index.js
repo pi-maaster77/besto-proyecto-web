@@ -1,14 +1,19 @@
 const escribir = document.getElementById("escribir"); // Obtener donde se escribiran los articulos
 
 function agregarArticulo(articulo) {
-  escribir.innerHTML += `<article id="articulo-${articulo.id}">
-      <p>${articulo.user}</p>
-      <h2>${articulo.title}</h2>
-      <img src="/image?name=${articulo.image}">
-      <button class="abrir-comentarios" onclick="abrirComentarios(${articulo.id})">comentar</button>
-      <p id="likes-${articulo.id}">${articulo.likes}</p> <!-- Identificador único para los likes -->
-      <button class="abrir-comentarios" onclick="anadirLike(${articulo.id})">like</button>
-    </article>`;
+  escribir.innerHTML += `
+<article id="articulo-${articulo.id}" class="articulo">
+    <p class="autor">${articulo.user}</p>
+    <h2 class="titulo">${articulo.title}</h2>
+    <img src="/image?name=${articulo.image}" class="imagen-articulo">
+    <div class="botones">
+        <button class="abrir-comentarios" onclick="abrirComentarios(${articulo.id})">💬</button>
+        <button class="dar-like" onclick="anadirLike(${articulo.id})">🤍 
+          <span id="likes-${articulo.id}">${articulo.likes}</span>
+        </button>
+    </div>
+</article>
+`;
 }
 
 async function mostrarArticulos() {

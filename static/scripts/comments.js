@@ -56,9 +56,9 @@ async function abrirComentarios(x) {
         if (result && Array.isArray(result) && result.length) {
             result.forEach(element => {
                 comentarios.innerHTML += `
-                <div>
-                    <p><strong>${element.user}</strong></p>
-                    <p>${element.text}</p>
+                <div class="comentario">
+                    <p class="autor"><strong>${element.user}</strong></p>
+                    <p class="texto">${element.text}</p>
                 </div>`;
             });
         } else {

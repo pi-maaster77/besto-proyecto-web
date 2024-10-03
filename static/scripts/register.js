@@ -28,15 +28,12 @@ document.getElementById('registrar').addEventListener('submit', async function(e
 
             if (response.ok) {
                 document.getElementById('mensaje').innerHTML = `<p style="color: green;">${result.message}</p>`;
-                const response = await fetch('/register', {
-                    method: 'POST',
-                    body: formData
-                });
-                await response.json().then(resp =>{
-                    sessionStorage.setItem("token", resp.token);
-                    sessionStorage.setItem("save", confirm("¿mantener la sesión iniciada?"));
-                });
 
+                // Almacenar el token en sessionStorage
+                sessionStorage.setItem("token", result.token);
+                sessionStorage.setItem("save", confirm("¿mantener la sesión iniciada?"));
+
+                // Redirigir después de 2 segundos
                 setTimeout(() => {
                     window.location.href = "/";
                 }, 2000);
