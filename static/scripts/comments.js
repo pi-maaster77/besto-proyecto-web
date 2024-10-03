@@ -55,10 +55,14 @@ async function abrirComentarios(x) {
 
         if (result && Array.isArray(result) && result.length) {
             result.forEach(element => {
+                console.log(element)
                 comentarios.innerHTML += `
                 <div class="comentario">
                     <p class="autor"><strong>${element.user}</strong></p>
-                    <p class="texto">${element.text}</p>
+                    <p class="texto">${element.text}</p>        
+                    <button class="dar-like" onclick="anadirLikeComentario(${element.id})">🤍 
+                        <span id="likes-comentario-${element.id}">${element.likes}</span>
+                    </button>
                 </div>`;
             });
         } else {
@@ -74,4 +78,46 @@ async function abrirComentarios(x) {
 function cerrarComentarios() {
     commentBox.style.display = "none";
     document.body.classList.remove('no-scroll'); // Quitar la clase para restaurar el scroll
+}
+
+async function anadirLikeComentario(commentID) {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        alert("Por favor, inicia sesión para dar like.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('token', token);
+    formData.append('comment_id', commentID);
+
+    try {
+        const response = await fetch("/likes", {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();  // Parsear la respuesta a JSON
+        console.log(result)
+        if (response.ok) {
+            actualizarLikesComentario(commentID, result.message)
+        } else {
+            // Si hay un error, mostrar el mensaje de error
+            alert(result.error || "Error al procesar la solicitud.");
+        }
+    } catch (error) {
+        console.error('Error al enviar el like:', error);
+        alert("Hubo un error al enviar el like.");
+    }
+}
+
+function actualizarLikesComentario(commentId, action) {
+    const likesElement = document.getElementById(`likes-comentario-${commentId}`);
+    const currentLikes = parseInt(likesElement.innerText, 10);
+    if (action == "like agregado") {
+        likesElement.innerText = currentLikes + 1;
+    } else if (action == "like removido") {
+        likesElement.innerText = currentLikes - 1;
+    }
 }

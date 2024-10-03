@@ -36,8 +36,8 @@ CREATE TABLE comentario (
 
 CREATE TABLE comentario_likes (
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
-    comentario_id INT REFERENCES comentario(id) ON DELETE CASCADE,
-    PRIMARY KEY (user_id, comentario_id)
+    comment_id INT REFERENCES comentario(id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, comment_id)
 );
 
 CREATE TABLE tokens (

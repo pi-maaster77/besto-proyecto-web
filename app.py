@@ -79,13 +79,13 @@ def get_likes():
         print(f"Error: {e}")
         return jsonify({"error": "Error en la transacción"}), 500
 
-
 @app.route("/likes", methods=['POST'])
 def set_likes():
     token = request.form.get('token')
     article_id = request.form.get('articleID')
+    comment_id = request.form.get('comment_id')
 
-    if not token or not article_id:
+    if not token or not (article_id or comment_id):
         return jsonify({"error": "Faltan parámetros"}), 400
 
     try:
@@ -99,40 +99,67 @@ def set_likes():
 
             user_id = user_id_result[0]
 
-            # Verificar si ya existe un 'like' para este artículo por el usuario
-            cursor.execute("""
-                SELECT 1 FROM likes 
-                WHERE user_id = %s AND article_id = %s;
-            """, (user_id, article_id))
-            
-            like_exists = cursor.fetchone()
+            if article_id:
+                # Verificar si ya existe un 'like' para este artículo por el usuario
+                cursor.execute("""
+                    SELECT 1 FROM likes 
+                    WHERE user_id = %s AND article_id = %s;
+                """, (user_id, article_id))
+                like_exists = cursor.fetchone()
 
-            if like_exists:
-                # Si ya existe el like, eliminarlo (es decir, quitar el like)
-                cursor.execute("DELETE FROM likes WHERE article_id = %s AND user_id = %s", (article_id, user_id))
+                if like_exists:
+                    # Si ya existe el like, eliminarlo
+                    cursor.execute("DELETE FROM likes WHERE article_id = %s AND user_id = %s", (article_id, user_id))
+                    cursor.execute("""
+                        UPDATE articulos
+                        SET likes = likes - 1                    
+                        WHERE id=%s;""", 
+                        (article_id,))
+                    action = "like removido"
+                else:
+                    # Insertar el like
+                    cursor.execute("INSERT INTO likes (user_id, article_id) VALUES (%s, %s)", (user_id, article_id))
+                    cursor.execute("""
+                        UPDATE articulos
+                        SET likes = likes + 1                    
+                        WHERE id=%s;""", 
+                        (article_id,))
+                    action = "like agregado"
+
+            elif comment_id:
+                # Verificar si ya existe un 'like' para este comentario por el usuario
                 cursor.execute("""
-                    UPDATE articulos
-                    SET likes = likes - 1                    
-                    WHERE id=%s;""", 
-                    (article_id,))
-                action = "like removido"
-            else:
-                # Si no existe, insertar el like
-                cursor.execute("INSERT INTO likes (user_id, article_id) VALUES (%s, %s)", (user_id, article_id))
-                cursor.execute("""
-                    UPDATE articulos
-                    SET likes = likes + 1                    
-                    WHERE id=%s;""", 
-                    (article_id,))
-                action = "like agregado"
-            
+                    SELECT 1 FROM comentario_likes
+                    WHERE user_id = %s AND comment_id = %s;
+                """, (user_id, comment_id))
+                like_exists = cursor.fetchone()
+
+                if like_exists:
+                    # Si ya existe el like, eliminarlo
+                    cursor.execute("DELETE FROM comentario_likes WHERE comment_id = %s AND user_id = %s", (comment_id, user_id))
+                    cursor.execute("""
+                        UPDATE comentario
+                        SET likes = likes - 1                    
+                        WHERE id=%s;""", 
+                        (comment_id,))
+                    action = "like removido"
+                else:
+                    # Insertar el like
+                    cursor.execute("INSERT INTO comentario_likes (user_id, comment_id) VALUES (%s, %s)", (user_id, comment_id))
+                    cursor.execute("""
+                        UPDATE comentario
+                        SET likes = likes + 1                    
+                        WHERE id=%s;""", 
+                        (comment_id,))
+                    action = "like agregado"
             connection.commit()  # Confirmar la transacción
 
         return jsonify({"message": action}), 200
 
     except Exception as e:
-        print(f"Error: {e}")
-        return jsonify({"error": "Error en la transacción"}), 500
+        print(f"Error en {('artículo' if article_id else 'comentario')}: {e}")
+        return jsonify({"error": f"Error en la transacción ({'artículo' if article_id else 'comentario'})"}), 500
+
 
 # Parte encargada de manejar los comentarios
 
@@ -147,7 +174,9 @@ def get_comment():
         with connection.cursor() as cursor:
             cursor.execute("""
                 SELECT json_agg(json_build_object(
-                    'text', c.comment, 
+                    'id', c.id,
+                    'text', c.comment,
+                    'likes', c.likes,
                     'user', u.username
                 )) AS comentarios 
                 FROM comentario c
