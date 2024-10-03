@@ -2,6 +2,8 @@ import os
 import psycopg2
 import uuid
 import json
+import threading
+import time
 
 from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, send_file, request
@@ -35,7 +37,8 @@ def get_articles():
                     'image', a.img, 
                     'title', a.title,
                     'user_id', a.user_id,
-                    'user', u.username  -- Incluir el nombre de usuario
+                    'user', u.username,  -- Incluir el nombre de usuario
+                    'likes', a.likes
                 )) AS articulos
                 FROM articulos a
                 LEFT JOIN users u ON a.user_id = u.id;  -- JOIN con la tabla de usuarios
@@ -60,12 +63,76 @@ def get_image():
 
 @app.route("/likes")
 def get_likes():
-    with connection.cursor() as cursor:
-        reqId = request.args.get('id')
-        cursor.execute(f"SELECT likes FROM articulos WHERE id = {reqId}")
-        result = cursor.fetchall()
-        json_result = result[0][0]
-        return jsonify(json_result)
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT id, likes 
+                FROM articulos
+            """)
+            result = cursor.fetchall()  # Obtiene todos los resultados como una lista de tuplas
+            
+            # Construir una lista de objetos JSON
+            json_result = [{"id": row[0], "likes": row[1]} for row in result]
+            
+            return jsonify(json_result), 200  # Devolver la lista en formato JSON
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"error": "Error en la transacción"}), 500
+
+
+@app.route("/likes", methods=['POST'])
+def set_likes():
+    token = request.form.get('token')
+    article_id = request.form.get('articleID')
+
+    if not token or not article_id:
+        return jsonify({"error": "Faltan parámetros"}), 400
+
+    try:
+        with connection.cursor() as cursor:
+            # Obtener el user_id a partir del token
+            cursor.execute("SELECT user_id FROM tokens WHERE token = %s", (token,))
+            user_id_result = cursor.fetchone()
+
+            if not user_id_result:
+                return jsonify({"error": "Token no válido"}), 403  # Token no válido
+
+            user_id = user_id_result[0]
+
+            # Verificar si ya existe un 'like' para este artículo por el usuario
+            cursor.execute("""
+                SELECT 1 FROM likes 
+                WHERE user_id = %s AND article_id = %s;
+            """, (user_id, article_id))
+            
+            like_exists = cursor.fetchone()
+
+            if like_exists:
+                # Si ya existe el like, eliminarlo (es decir, quitar el like)
+                cursor.execute("DELETE FROM likes WHERE article_id = %s AND user_id = %s", (article_id, user_id))
+                cursor.execute("""
+                    UPDATE articulos
+                    SET likes = likes - 1                    
+                    WHERE id=%s;""", 
+                    (article_id,))
+                action = "like removido"
+            else:
+                # Si no existe, insertar el like
+                cursor.execute("INSERT INTO likes (user_id, article_id) VALUES (%s, %s)", (user_id, article_id))
+                cursor.execute("""
+                    UPDATE articulos
+                    SET likes = likes + 1                    
+                    WHERE id=%s;""", 
+                    (article_id,))
+                action = "like agregado"
+            
+            connection.commit()  # Confirmar la transacción
+
+        return jsonify({"message": action}), 200
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"error": "Error en la transacción"}), 500
 
 # Parte encargada de manejar los comentarios
 
@@ -315,7 +382,36 @@ def handle_register():
         print(f"Error en el registro: {e}")
         return jsonify({"error": "Ocurrió un error en el registro."}), 500
 
+def recompute_likes():
+    """Función para recalcular los likes cada hora."""
+    while True:
+        try:
+            with connection.cursor() as cursor:
+                # Actualizar el número de likes en la tabla 'articulos'
+                cursor.execute("""
+                    UPDATE articulos a
+                    SET likes = (
+                        SELECT COUNT(*) FROM likes l
+                        WHERE l.article_id = a.id
+                    );
+                """)
+                connection.commit()
+                print("Likes recalculados exitosamente")
+
+        except Exception as e:
+            print(f"Error al recalcular likes: {e}")
+
+        # Esperar 1 hora (3600 segundos)
+        time.sleep(3600)
+
+# Lanza el hilo de recalculo de likes al iniciar la aplicación Flask
+def start_background_thread():
+    background_thread = threading.Thread(target=recompute_likes)
+    background_thread.daemon = True  # Permite que el hilo se detenga al cerrar el servidor
+    background_thread.start()
+
 
 #parte de inicio del servidor
 if __name__ == "__main__":
+    start_background_thread()
     app.run(debug=True, port=5000)

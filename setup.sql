@@ -13,18 +13,18 @@ CREATE TABLE articulos (
     likes INT DEFAULT 0
 );
 
+CREATE TABLE likes (
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    article_id INT REFERENCES articulos(id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, article_id)
+);
+
 -- Crear la tabla `users`
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL
 );
-
-CREATE TABLE likes (
-    bv user_id INT REFERENCES users(id) ON DELETE CASCADE,
-    article_id INT REFERENCES articulos(id) ON DELETE CASCADE,
-    PRIMARY KEY (user_id, article_id)
-)
 
 CREATE TABLE comentario (
     id SERIAL PRIMARY KEY,
