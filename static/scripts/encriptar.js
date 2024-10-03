@@ -15,5 +15,4 @@ export async function sha256(message) {
   }
   
   // Ejemplo de uso
-  sha256('texto a hashear').then(hash => console.log(hash));
   

@@ -20,7 +20,6 @@ function logout(){
         message: 'El usuario ha cerrado la pestaña' 
     });
     
-    console.log('Enviando solicitud de logout:', data); // Agregar esta línea para depuración
     navigator.sendBeacon('/logout', data);
     location.reload();
 

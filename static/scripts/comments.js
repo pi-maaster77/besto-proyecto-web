@@ -55,7 +55,6 @@ async function abrirComentarios(x) {
 
         if (result && Array.isArray(result) && result.length) {
             result.forEach(element => {
-                console.log(element)
                 comentarios.innerHTML += `
                 <div class="comentario">
                     <p class="autor"><strong>${element.user}</strong></p>
@@ -99,7 +98,6 @@ async function anadirLikeComentario(commentID) {
         });
 
         const result = await response.json();  // Parsear la respuesta a JSON
-        console.log(result)
         if (response.ok) {
             actualizarLikesComentario(commentID, result.message)
         } else {

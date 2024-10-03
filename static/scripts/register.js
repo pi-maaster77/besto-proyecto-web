@@ -11,7 +11,6 @@ document.getElementById('registrar').addEventListener('submit', async function(e
         document.getElementById("mensajeError").innerHTML = "Error al crear la cuenta: las contraseñas no coinciden";
     } else {
         const hash = await sha256(passwd); // Asegúrate de que sha256 esté correctamente definido
-        console.log(`Usuario: ${user}, Contraseña (hashed): ${hash}`); // Depuración
 
         const formData = new FormData();
         formData.append('passwd', hash);
@@ -24,7 +23,6 @@ document.getElementById('registrar').addEventListener('submit', async function(e
             });
 
             const result = await response.json();
-            console.log(result); // Verifica la respuesta del servidor
 
             if (response.ok) {
                 document.getElementById('mensaje').innerHTML = `<p style="color: green;">${result.message}</p>`;

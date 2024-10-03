@@ -24,7 +24,6 @@ async function mostrarArticulos() {
     }
 
     const data = await response.json(); // Convertir lo obtenido
-    console.log(data)
     
     for (const articulo of data) { // Por cada articulo, verificar si el usuario le dio like [1] y escribir el articulo [2].
       agregarArticulo(articulo); // 2

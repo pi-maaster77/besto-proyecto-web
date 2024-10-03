@@ -1,5 +1,4 @@
 import { sha256 } from '/static/scripts/encriptar.js';
-console.log(sha256("hola"));
 
 document.getElementById('ingresar').addEventListener('submit', async function(e) {
     e.preventDefault(); // Prevenir el envío del formulario
@@ -13,7 +12,6 @@ document.getElementById('ingresar').addEventListener('submit', async function(e)
     }
 
     const hash = await sha256(passwd); // Asegúrate de que sha256 esté correctamente definido
-    console.log(`Usuario: ${user}, Contraseña (hashed): ${hash}`); // Depuración
 
     const formData = new FormData();
     formData.append('passwd', hash);
