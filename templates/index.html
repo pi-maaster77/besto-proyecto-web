@@ -13,13 +13,13 @@
     <header id="inicio">
         <nav>
             <a href="/" class="icon"><img src="/static/assets/logo.png" alt="Logo"></a>
-            <div class="icon-buttons">
-                <a href="/upload">Crear</a>
+            <div class="icon-buttons" id="icon-buttons">
                 <a href="/login">Login</a>
                 <a href="/register">Registrar</a>
+                <a href="/upload">Crear</a>
                 <i class="fas fa-envelope"></i>
                 <i class="fas fa-user-friends" id="toggle-friends-list" onclick="toggleFriendsList()"></i>
-                <img src="/static/assets/default-user.png" alt="Usuario" onclick="window.location.href='perfil.html'">
+                <img src="/static/assets/default-user.png" alt="Usuario" onclick="if(confirm('¿desea cerrar sesion?')) logout();">
                 <a href="perfil.html" id="username">...</a>
             </div>
             <div class="friends-list" id="friends-list">
@@ -47,6 +47,7 @@
     </section>
     
     <script src="/static/scripts/comments.js"></script>
+    <script src="/static/scripts/manejar_sesion.js"></script>
     <script src="/static/scripts/like.js"></script>
     <script src="/static/scripts/user.js"></script>
     <script src="/static/scripts/index.js"></script>

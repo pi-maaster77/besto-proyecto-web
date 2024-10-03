@@ -1,7 +1,7 @@
 document.getElementById("nuevo-comentario").addEventListener('submit', async function(e) {
     e.preventDefault(); // Prevenir el envío del formulario
 
-    const token = sessionStorage.getItem("token"); // Asegúrate de no tener espacios en blanco
+    const token = localStorage.getItem("token");
     const comment = document.getElementById("texto");
 
     // Validar si hay un comentario

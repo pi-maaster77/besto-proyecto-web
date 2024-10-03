@@ -79,6 +79,7 @@ textarea {
 
 input[type="file"] {
     padding: 10px;
+    margin: 10px;
     border: none;
 }
 

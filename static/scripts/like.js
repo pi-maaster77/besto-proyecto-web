@@ -1,5 +1,5 @@
 async function anadirLike(articleID) {
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
     if (!token) {
         alert("Por favor, inicia sesión para dar like.");

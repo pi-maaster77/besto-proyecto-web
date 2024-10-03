@@ -1,5 +1,4 @@
 import { sha256 } from '/static/scripts/encriptar.js';
-console.log(sha256("hola"))
 
 document.getElementById('registrar').addEventListener('submit', async function(e) {
     e.preventDefault(); // Prevenir el envío del formulario
@@ -25,13 +24,20 @@ document.getElementById('registrar').addEventListener('submit', async function(e
             });
 
             const result = await response.json();
+            console.log(result); // Verifica la respuesta del servidor
 
             if (response.ok) {
                 document.getElementById('mensaje').innerHTML = `<p style="color: green;">${result.message}</p>`;
-
-                // Almacenar el token en sessionStorage
-                sessionStorage.setItem("token", result.token);
-                sessionStorage.setItem("save", confirm("¿mantener la sesión iniciada?"));
+                const response2 = await fetch('/login', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result2 = await response2.json();
+                if(result){
+                    // Almacenar el token en localStorage
+                    localStorage.setItem("token", result2.token);
+                    localStorage.setItem("save", confirm("¿mantener la sesión iniciada?"));
+                }
 
                 // Redirigir después de 2 segundos
                 setTimeout(() => {

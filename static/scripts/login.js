@@ -1,19 +1,3 @@
-window.addEventListener('beforeunload', function (e) {
-    const guardarSesion = sessionStorage.getItem("save"); // No necesitas "this" aquí
-    if (!guardarSesion) { // Verifica si no se debe guardar la sesión
-        const tempToken = sessionStorage.getItem("token");
-        const url = '/logout';
-        const data = JSON.stringify({ 
-            token: tempToken, 
-            message: 'El usuario ha cerrado la pestaña' 
-        });
-        
-        // Enviar la solicitud con sendBeacon
-        navigator.sendBeacon(url, data);
-    }
-});
-
-// Importar la función sha256
 import { sha256 } from '/static/scripts/encriptar.js';
 console.log(sha256("hola"));
 
@@ -45,8 +29,8 @@ document.getElementById('ingresar').addEventListener('submit', async function(e)
 
         if (response.ok) {
             document.getElementById('mensaje').innerHTML = `<p style="color: green;">${result.message}</p>`;
-            sessionStorage.setItem("token", result.token);
-            sessionStorage.setItem("save", confirm("¿mantener la sesión iniciada?"));
+            localStorage.setItem("token", result.token);
+            localStorage.setItem("save", confirm("¿mantener la sesión iniciada?"));
             setTimeout(() => {
                 window.location.href = "/";
             }, 2000);
