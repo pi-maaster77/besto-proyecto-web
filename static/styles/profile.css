@@ -182,6 +182,7 @@ img {
     cursor: pointer; /* Cambia el cursor al pasar por encima */
     font-size: 16px; /* Tamaño de la fuente */
     transition: background-color 0.3s; /* Transición suave para el color de fondo */
+    margin-bottom: 10px;
 }
 
 .boton-de-cierre:hover {
