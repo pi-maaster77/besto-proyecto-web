@@ -26,30 +26,46 @@ connection = psycopg2.connect(url)
 @app.route("/")
 def get_home():
     return render_template("index.html")
-
+    
 @app.route("/articles")
 def get_articles():
+    id = request.args.get("id")
     try:
         with connection.cursor() as cursor:
-            cursor.execute("""
-                SELECT json_agg(json_build_object(
-                    'id', a.id, 
-                    'image', a.img, 
-                    'title', a.title,
-                    'user_id', a.user_id,
-                    'user', u.username,  -- Incluir el nombre de usuario
-                    'likes', a.likes
-                )) AS articulos
-                FROM articulos a
-                LEFT JOIN users u ON a.user_id = u.id;  -- JOIN con la tabla de usuarios
-            """)
+            if id:
+                cursor.execute("""
+                    SELECT json_agg(json_build_object(
+                        'id', a.id, 
+                        'image', a.img, 
+                        'title', a.title,
+                        'user_id', a.user_id,
+                        'user', u.username,  -- Incluir el nombre de usuario
+                        'likes', a.likes
+                    )) AS articulos
+                    FROM articulos a
+                    LEFT JOIN users u ON a.user_id = u.id 
+                    WHERE u.id=%s; 
+                """, (id,))
+            else: 
+                cursor.execute("""
+                    SELECT json_agg(json_build_object(
+                        'id', a.id, 
+                        'image', a.img, 
+                        'title', a.title,
+                        'user_id', a.user_id,
+                        'user', u.username,  -- Incluir el nombre de usuario
+                        'likes', a.likes
+                    )) AS articulos
+                    FROM articulos a
+                    LEFT JOIN users u ON a.user_id = u.id;  -- JOIN con la tabla de usuarios
+                """)
             result = cursor.fetchone()  # Solo se espera una fila
             json_result = result[0] if result and result[0] else []  # Verificación de resultado nulo
             return jsonify(json_result), 200
-
     except Exception as e:
-        print(f"Error: {e}")
-        return jsonify({"error": "Error en la transacción"}), 500
+        connection.rollback()  # Rollback transaction on error
+        print(f"Error: {e}")  # Log the specific error message
+        return jsonify({"error": "Internal Server Error"}), 500
 
 
 @app.route("/image")
@@ -175,6 +191,7 @@ def get_comment():
             cursor.execute("""
                 SELECT json_agg(json_build_object(
                     'id', c.id,
+                    'user_id', user_id,
                     'text', c.comment,
                     'likes', c.likes,
                     'user', u.username
@@ -269,7 +286,7 @@ def handle_upload():
             # Generar un nombre único utilizando UUID para evitar colisiones
             extension = os.path.splitext(file.filename)[1]  # Obtener la extensión original
             unique_id = str(uuid.uuid4())  # Generar un UUID único
-            filename = secure_filename(f"{title}_{unique_id}{extension}")  # Asegurar el nombre
+            filename = secure_filename(f"{unique_id}{extension}")  # Asegurar el nombre
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)  # Guardar la imagen
 
@@ -362,15 +379,18 @@ def get_username_root():
     try:
         with connection.cursor() as cursor:
             cursor.execute("""
-                SELECT u.username
-                FROM users u
+                SELECT json_agg(json_build_object(
+                    'id', u.id,
+                    'username', u.username,
+                    'img', u.img
+                )) FROM users u
                 JOIN tokens t ON u.id = t.user_id
                 WHERE t.token = %s
             """, (token,))  # El token debe pasarse como una tupla (token,)
             result = cursor.fetchone()
 
             if result:
-                return jsonify({"username": result[0]}), 200
+                return jsonify(result[0][0]), 200
             else:
                 return jsonify({"error": "Token inválido o usuario no encontrado"}), 404
 
@@ -410,6 +430,89 @@ def handle_register():
     except Exception as e:
         print(f"Error en el registro: {e}")
         return jsonify({"error": "Ocurrió un error en el registro."}), 500
+
+@app.route("/getuser")
+def get_user():
+    id = request.args.get("id")
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT json_agg(json_build_object(
+                    'id', id,
+                    'username', username,
+                    'img', img
+                )) FROM users WHERE id = %s
+            """, (id,))
+            result = cursor.fetchone()
+
+            if result:
+                return jsonify(result[0][0]), 200
+            else:
+                return jsonify({"error": "Token inválido o usuario no encontrado"}), 404
+
+    except psycopg2.Error as e:  # Usa la excepción adecuada si es PostgreSQL, o usa Exception si es otra base de datos
+        print(f"Error en la transacción: {e}")
+        return jsonify({"error": "Error en la transacción"}), 500
+
+@app.route("/user")
+def user_root():
+    return render_template("profiles.html")
+
+@app.route('/change-pfp', methods=['POST'])
+def change_pfp():
+    if 'file' not in request.files or 'token' not in request.form:
+        print("Falta el archivo o el token")
+        return jsonify({"error": "Falta el archivo o el token"}), 400
+
+    file = request.files['file']
+    token = request.form['token']
+    
+    if file.filename == '':
+        print("No se seleccionó ningún archivo")
+        return jsonify({"error": "No se seleccionó ningún archivo"}), 400
+
+    if file and token:
+        try:
+            # Obtener el user_id a partir del token
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT user_id FROM tokens WHERE token = %s", (token,))
+                user_id_result = cursor.fetchone()
+                
+                if not user_id_result:
+                    print("Token no válido")
+                    return jsonify({"error": "Token no válido"}), 403  # Token no encontrado
+                
+                user_id = user_id_result[0]
+
+            # Validar la extensión del archivo (opcional, si deseas limitar tipos de archivo)
+            ALLOWED_EXTENSIONS = {'.png', '.jpg', '.jpeg', '.gif'}
+            extension = os.path.splitext(file.filename)[1].lower()  # Obtener la extensión y convertir a minúsculas
+
+            if extension not in ALLOWED_EXTENSIONS:
+                print("Tipo de archivo no permitido")
+                return jsonify({"error": "Tipo de archivo no permitido"}), 400
+
+            # Generar un nombre único utilizando UUID para evitar colisiones
+            unique_id = str(uuid.uuid4())  # Generar un UUID único
+            filename = secure_filename(f"{unique_id}{extension}")  # Asegurar el nombre
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)  # Guardar la imagen
+
+            print(f"Imagen guardada correctamente: {filename}")
+
+            # Actualizar la base de datos con la nueva imagen
+            with connection.cursor() as cursor:
+                query = "UPDATE users SET img = %s WHERE id = %s"
+                cursor.execute(query, (filename, user_id))
+                connection.commit()
+                print(f"Imagen '{filename}' y user_id '{user_id}' actualizados correctamente en la base de datos")
+
+            return jsonify({"message": "Se actualizó la foto de perfil"}), 200
+
+        except Exception as e:
+            print(f"Error: {e}")
+            return jsonify({"error": str(e)}), 500
+
 
 def recompute_likes():
     """Función para recalcular los likes cada hora."""

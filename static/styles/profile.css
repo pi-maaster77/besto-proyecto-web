@@ -54,25 +54,6 @@ img {
     border-radius: 20px;
 }
 
-footer {
-    background-color: #2c3e50;
-    color: white;
-    padding: 20px;
-    text-align: center;
-
-}
-
-footer nav {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 10px;
-}
-
-footer p {
-    margin: 0;
-}
-
 .ui.button {
     margin: 5px;
 }
@@ -235,7 +216,6 @@ footer p {
     background-color: #45a049; /* Color más oscuro al pasar el cursor */
 }
 
-
 .articulo {
     border: 1px solid #ddd; /* Borde ligero */
     border-radius: 5px; /* Esquinas redondeadas */
@@ -253,7 +233,6 @@ footer p {
     text-align: center;
     flex-grow: 1;
 }
-
 .autor {
     font-size: 14px; /* Tamaño de fuente más pequeño */
     color: #555; /* Color gris para el autor */
@@ -316,3 +295,36 @@ footer p {
 .dar-like:hover {
     background-color: #ff0055; /* Color de fondo rosa */
 }
+
+.usuario * {
+    margin: 20px;
+}
+
+.usuario img {
+    width: 20vh;
+    height: 20vh;
+    border-radius: 50%;
+    margin: 10px;
+}
+
+.usuario {
+    flex-direction: row;
+    text-align: left;
+    display: flex;
+    border: 1px solid #ddd; /* Borde ligero */
+    border-radius: 5px; /* Esquinas redondeadas */
+    padding: 15px; /* Espaciado interno */
+    margin: 10px 0; /* Espaciado externo */
+    background-color: #f9f9f9; /* Fondo claro */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    width: 90%;
+    max-width: 800px;
+    margin: 40px auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    flex-grow: 1;
+}
+

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subir archivo al hacer click en imagen</title>
+    <script>
+        function triggerFileUpload() {
+            document.getElementById('fileInput').click();
+        }
+
+        function uploadFile() {
+            document.getElementById('uploadForm').submit();
+        }
+    </script>
+</head>
+<body>
+    <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+        <!-- Input de archivo oculto -->
+        <input type="file" id="fileInput" name="file" style="display: none;" onchange="uploadFile()">
+        <!-- Imagen con click para subir archivo -->
+        <img src="image.png" alt="Haz click para subir un archivo" onclick="triggerFileUpload()" style="cursor: pointer;">
+    </form>
+</body>
+</html>

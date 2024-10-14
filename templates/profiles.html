@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NPI Arts</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/styles/index.css">
+    <link rel="stylesheet" href="/static/styles/profile.css">
+
+    <title>Perfil</title>
 </head>
 <body>
     <header id="inicio">
@@ -25,25 +26,16 @@
         </nav>
         <h1>NPI Arts</h1>
     </header>
-
-    <section id="escribir">
+    <section id="profile">
     </section>
+    <section id="posts">
 
-    <section id="contenedor-comentarios">
-        <button onclick="cerrarComentarios()" class="boton-de-cierre">X</button>
-        <div id="comentarios"></div>
-        <form id="nuevo-comentario">
-            <input type="text" placeholder="comenta algo..." id="texto" class="entrada-de-comentario">
-            <input type="submit" value="▲" class="subir">
-        </form>
     </section>
-    
+    <script src="/static/scripts/profiles.js"></script>
     <script src="/static/scripts/comments.js"></script>
     <script src="/static/scripts/friends.js"></script>
-    <script src="/static/scripts/index.js"></script>
     <script src="/static/scripts/like.js"></script>
     <script src="/static/scripts/user.js"></script>
-    
     
     <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
 </body>

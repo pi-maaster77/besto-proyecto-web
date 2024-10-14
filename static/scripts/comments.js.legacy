@@ -10,12 +10,6 @@ document.getElementById("nuevo-comentario").addEventListener('submit', async fun
         return; 
     }
 
-    // Verificar si article_id está definido antes de usarlo
-    if (typeof article_id === 'undefined') {
-        alert("No se ha especificado el ID del artículo.");
-        return;
-    }
-
     const formData = new FormData();
     formData.append('token', token);
     formData.append('comment', comment.value);
@@ -38,20 +32,19 @@ document.getElementById("nuevo-comentario").addEventListener('submit', async fun
     }
 });
 
-// Inicializar article_id
-let article_id = null;
+let article_id;
 const commentBox = document.getElementById("contenedor-comentarios");
 
 // Mostrar los comentarios y desactivar el scroll en el cuerpo
 async function abrirComentarios(x) {
     try {
-        article_id = x;  // Asignar el ID del artículo a la variable global
+        article_id = x;
         commentBox.style.display = "block";
         document.body.classList.add('no-scroll'); // Agregar clase para desactivar el scroll
         
         const response = await fetch(`/comment?id=${x}`);
         const comentarios = document.getElementById("comentarios");
-        comentarios.innerHTML = ""; // Limpiar los comentarios previos
+        comentarios.innerHTML = "";
 
         if (!response.ok) {
             comentarios.innerHTML = "<p>Error al cargar comentarios.</p>";
@@ -64,7 +57,7 @@ async function abrirComentarios(x) {
             result.forEach(element => {
                 comentarios.innerHTML += `
                 <div class="comentario">
-                    <a class="autor" href="/user?id=${element.user_id}"><strong>${element.user}</strong></a>
+                    <p class="autor"><strong>${element.user}</strong></p>
                     <p class="texto">${element.text}</p>        
                     <button class="dar-like" onclick="anadirLikeComentario(${element.id})">🤍 
                         <span id="likes-comentario-${element.id}">${element.likes}</span>
@@ -76,7 +69,7 @@ async function abrirComentarios(x) {
         }
     } catch (error) {
         console.error('Error al cargar comentarios:', error);
-        document.getElementById("comentarios").innerHTML = "<p>Error al cargar comentarios.</p>";
+        comentarios.innerHTML = "<p>Error al cargar comentarios.</p>";
     }
 }
 

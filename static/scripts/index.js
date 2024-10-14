@@ -3,7 +3,7 @@ const escribir = document.getElementById("escribir"); // Obtener donde se escrib
 function agregarArticulo(articulo) {
   escribir.innerHTML += `
 <article id="articulo-${articulo.id}" class="articulo">
-    <p class="autor">${articulo.user}</p>
+    <a class="autor" href="/user?id=${articulo.user_id}">${articulo.user}</a>
     <h2 class="titulo">${articulo.title}</h2>
     <img src="/image?name=${articulo.image}" class="imagen-articulo">
     <div class="botones">
